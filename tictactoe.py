@@ -1,3 +1,5 @@
+import random
+
 class Board:
     def __init__(self):
         self.top_left = ' '
@@ -28,11 +30,12 @@ def start_game():
 game_count = 0
 
 while True:
+    question = ['Do you wanna play Tic Tac Toe..?', 'Do you wanna play again..?', 'Another game..?', 'Shall we give that another try..?', 'Are you up for one more..?']
     if game_count == 0:
-        question = 'Do you wanna play Tic Tac Toe..?'
+        play_or_not = input('{} [Respond with Y or N]\n'.format(question[0])).upper()
     else:
-        question = 'Another game..?'
-    play_or_not = input('{} [Respond with Y or N]\n'.format(question)).upper()
+        play_or_not = input('{} [Respond with Y or N]\n'.format(question[random.randint(1,4)])).upper()
+
     if play_or_not == 'Y':
         start_game()
         game_count += 1
