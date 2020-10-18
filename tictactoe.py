@@ -19,7 +19,7 @@ class Board:
         print(' ------- ')
         print('{} | {} | {}\n'.format(self.bottom_left, self.bottom_center, self.bottom_right))
 
-def start_game():
+def play_game():
     print("\nLet's play...")
     game_board = Board()
     game_board.print_board()
@@ -37,7 +37,7 @@ while True:
         play_or_not = input('{} [Respond with Y or N]\n'.format(question[random.randint(1,4)])).upper()
 
     if play_or_not == 'Y':
-        start_game()
+        play_game()
         game_count += 1
     elif play_or_not == 'N':
         print('Fine! See ya later...')
