@@ -28,11 +28,11 @@ def play_game():
     print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
 
 game_count = 0
-rebound = 0
+rebound = False
 
 while True:
     question = ['Do you wanna play Tic Tac Toe..?', 'Do you wanna play again..?', 'Another game..?', 'Shall we give that another try..?', 'Are you up for one more..?']
-    if rebound == 1:
+    if rebound:
         # TO CHECK IF THIS IS A REBOUNDED INPUT REQUEST
         yes_or_no = input().upper()
     elif game_count == 0:
@@ -46,7 +46,7 @@ while True:
         # IF THE USER WISHES TO PLAY
         play_game()
         game_count += 1
-        rebound = 0
+        rebound = False
     elif yes_or_no == 'N':
         # IF THE USER WISHES NOT TO PLAY
         print('Fine! See ya later...')
@@ -55,4 +55,4 @@ while True:
         # THIS IS THE CASE OF A REBOUNDED INPUT REQUEST, WHERE THE USER HAS 
         # NEITHER PASSED A 'Y' OR AN 'N' AS THE INPUT
         print('Either a Y or an N, please.')
-        rebound = 1
+        rebound = True
