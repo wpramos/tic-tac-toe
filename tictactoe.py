@@ -26,6 +26,14 @@ def play_game():
     game_board = Board()
     game_board.print_board()
     print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
+    
+    while True:
+        player_move = input('Your Move: ').lower().replace('-', '_')
+        if hasattr(game_board, player_move):
+            setattr(game_board, player_move, 'X')
+            game_board.print_board()
+        else:
+            print('\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
 
 game_count = 0
 rebound = False
