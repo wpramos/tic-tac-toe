@@ -12,6 +12,14 @@ class Board:
         self.bottom_center = ' '
         self.bottom_right = ' '
 
+        self.available_spaces = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
+
+    def are_spaces_filled(self):
+        if len(self.available_spaces) == 0:
+            return True
+        else:
+            return False
+
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
         print('\n{} | {} | {}'.format(self.top_left, self.top_center, self.top_right))
