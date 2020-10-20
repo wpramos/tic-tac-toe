@@ -1,4 +1,6 @@
-import random
+import random, logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: \n%(message)s')
 
 class Board:
     def __init__(self):
@@ -16,9 +18,29 @@ class Board:
 
     def are_spaces_filled(self):
         if len(self.available_spaces) == 0:
+            print('Game over, without a clear winner...')
             return True
         else:
             return False
+
+    def user_move(self):
+        logging.debug("Scope: Board class' user_move() method")
+        while True:
+            player_move = input('Your Move: ').lower().replace('-', '_')
+            if hasattr(self, player_move):
+                setattr(self, player_move, 'X')
+                self.available_spaces.remove(player_move)
+                self.print_board()
+                return
+            else:
+                continue
+
+    def computer_move(self):
+        logging.debug("Scope: Board class' computer_move() method")
+        machine_move = self.available_spaces[random.randint(0, len(self.available_spaces) - 1)]
+        setattr(self, machine_move, 'O')
+        self.available_spaces.remove(machine_move)
+        self.print_board()
 
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
@@ -30,18 +52,20 @@ class Board:
 
 def play_game():
     '''This function launches the game.'''
+    logging.debug("Scope: play_game() function")
     print("\nLet's play...")
     game_board = Board()
     game_board.print_board()
     print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
     
     while True:
-        player_move = input('Your Move: ').lower().replace('-', '_')
-        if hasattr(game_board, player_move):
-            setattr(game_board, player_move, 'X')
-            game_board.print_board()
-        else:
-            print('\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
+        game_board.user_move()
+        if game_board.are_spaces_filled():
+            break
+
+        game_board.computer_move()
+        if game_board.are_spaces_filled():
+            break
 
 game_count = 0
 rebound = False
