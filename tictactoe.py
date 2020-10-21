@@ -30,6 +30,7 @@ class Board:
                 self.print_board()
                 return
             else:
+                print('\nTry "Top-Left", for instance.\n')
                 continue
 
     def computer_move(self):
@@ -49,12 +50,34 @@ class Board:
             return False
 
     def find_winner(self):
-        # def is_this_complete(first, second, third):
-        #     if first == second == third and first == 'X':
-        #         print('You are the winner.')
-        #     elif first == second == third and first == 'O':
-        #         print('The Computer has won.')
-        pass
+        def is_this_complete(first, second, third):
+            if first == second == third and first == 'X':
+                return [True, 'X']
+            elif first == second == third and first == 'O':
+                return [True, 'O']
+            else:
+                return[False]
+
+        if is_this_complete(self.top_left, self.top_center, self.top_right)[0]:
+            return is_this_complete(self.top_left, self.top_center, self.top_right)[1]    
+        elif is_this_complete(self.middle_left, self.middle_center, self.middle_right)[0]:
+            return is_this_complete(self.middle_left, self.middle_center, self.middle_right)[1]
+        elif is_this_complete(self.bottom_left, self.bottom_center, self.bottom_right)[0]:
+            return is_this_complete(self.bottom_left, self.bottom_center, self.bottom_right)[1]
+
+        elif is_this_complete(self.top_left, self.middle_left, self.bottom_left)[0]:
+            return is_this_complete(self.top_left, self.middle_left, self.bottom_left)[1]
+        elif is_this_complete(self.top_center, self.middle_center, self.bottom_center)[0]:
+            return is_this_complete(self.top_center, self.middle_center, self.bottom_center)[1]
+        elif is_this_complete(self.top_right, self.middle_right, self.bottom_right)[0]:
+            return is_this_complete(self.top_right, self.middle_right, self.bottom_right)[1]
+
+        elif is_this_complete(self.top_left, self.middle_center, self.bottom_right)[0]:
+            return is_this_complete(self.top_left, self.middle_center, self.bottom_right)[1]
+        elif is_this_complete(self.top_right, self.middle_center, self.bottom_left)[0]:
+            return is_this_complete(self.top_right, self.middle_center, self.bottom_left)[1]
+        else:
+            return None
 
 
     def print_board(self):
@@ -79,8 +102,14 @@ def play_game():
         else:
             game_board.computer_move()
         m_count += 1
+        
+        winner = game_board.find_winner()
+        
+        if winner:
+            print('The {} is the winner.\n'.format('user' if winner == 'X' else 'machine'))
+            break
         if game_board.are_spaces_filled():
-            print('Game over, without a clear winner...')
+            print('Stalemate! Neither the user nor the machine is a winner...')
             break
 
 game_count = 0
