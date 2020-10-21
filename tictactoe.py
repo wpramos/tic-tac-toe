@@ -1,6 +1,7 @@
 import random, logging
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
+logging.disable(logging.DEBUG)
 
 class Board:
     def __init__(self):
@@ -16,10 +17,10 @@ class Board:
 
         self.available_spaces = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
-    def user_move(self, move_number):
+    def user_move(self, move_count):
         '''This method requests user input and executes the user's move.'''
         logging.debug("Scope: Board class' user_move() method")
-        if move_number < 2:
+        if move_count < 2:
             print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
@@ -62,13 +63,13 @@ def play_game():
     game_board = Board()
     game_board.print_board()
 
-    i = random.randint(0, 1) # THE VARIABLE SPECIFIES THE MOVE_NUMBER
+    m_count = random.randint(0, 1) # THE VARIABLE SPECIFIES THE MOVE_NUMBER
     while True:
-        if i % 2 == 0:
-            game_board.user_move(i)
+        if m_count % 2 == 0:
+            game_board.user_move(m_count)
         else:
             game_board.computer_move()
-        i += 1
+        m_count += 1
         if game_board.are_spaces_filled():
             print('Game over, without a clear winner...')
             break
