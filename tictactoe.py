@@ -1,6 +1,6 @@
 import random, logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: \n%(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 
 class Board:
     def __init__(self):
@@ -16,15 +16,11 @@ class Board:
 
         self.available_spaces = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
-    def are_spaces_filled(self):
-        if len(self.available_spaces) == 0:
-            print('Game over, without a clear winner...')
-            return True
-        else:
-            return False
-
-    def user_move(self):
+    def user_move(self, move_number):
+        '''This method requests user input and executes the user's move.'''
         logging.debug("Scope: Board class' user_move() method")
+        if move_number < 2:
+            print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
             if hasattr(self, player_move):
@@ -36,11 +32,20 @@ class Board:
                 continue
 
     def computer_move(self):
+        '''This method executes the computer's move.'''
         logging.debug("Scope: Board class' computer_move() method")
+        print("Machine's Move: ")
         machine_move = self.available_spaces[random.randint(0, len(self.available_spaces) - 1)]
         setattr(self, machine_move, 'O')
         self.available_spaces.remove(machine_move)
         self.print_board()
+
+    def are_spaces_filled(self):
+        '''This method checks to see if every space in the board is filled.'''
+        if len(self.available_spaces) == 0:
+            return True
+        else:
+            return False
 
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
@@ -56,15 +61,16 @@ def play_game():
     print("\nLet's play...")
     game_board = Board()
     game_board.print_board()
-    print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
-    
-    while True:
-        game_board.user_move()
-        if game_board.are_spaces_filled():
-            break
 
-        game_board.computer_move()
+    i = random.randint(0, 1) # THE VARIABLE SPECIFIES THE MOVE_NUMBER
+    while True:
+        if i % 2 == 0:
+            game_board.user_move(i)
+        else:
+            game_board.computer_move()
+        i += 1
         if game_board.are_spaces_filled():
+            print('Game over, without a clear winner...')
             break
 
 game_count = 0
