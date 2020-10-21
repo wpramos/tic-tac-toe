@@ -48,6 +48,15 @@ class Board:
         else:
             return False
 
+    def find_winner(self):
+        # def is_this_complete(first, second, third):
+        #     if first == second == third and first == 'X':
+        #         print('You are the winner.')
+        #     elif first == second == third and first == 'O':
+        #         print('The Computer has won.')
+        pass
+
+
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
         print('\n{} | {} | {}'.format(self.top_left, self.top_center, self.top_right))
