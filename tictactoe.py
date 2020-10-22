@@ -3,17 +3,25 @@ import random, logging
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 logging.disable(logging.DEBUG)
 
+class Box():
+    def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None, mark=' '):
+        self.on_left = on_left
+        self.on_right = on_right
+        self.on_top = on_top
+        self.on_bottom = on_bottom
+        self.mark = mark      
+
 class Board:
     def __init__(self):
-        self.top_left = ' '
-        self.top_center = ' '
-        self.top_right = ' '
-        self.middle_left = ' '
-        self.middle_center = ' '
-        self.middle_right = ' '
-        self.bottom_left = ' '
-        self.bottom_center = ' '
-        self.bottom_right = ' '
+        self.top_left = Box(on_right='top_center', on_bottom='middle_left')
+        self.top_center = Box(on_left='top_left', on_right='top_right', on_bottom='middle_center')
+        self.top_right = Box(on_left='top_center', on_bottom='middle_right')
+        self.middle_left = Box(on_right='middle_center', on_top='top_left', on_bottom='bottom_left')
+        self.middle_center = Box(on_left='middle_left', on_right='middle_right', on_top='top_center', on_bottom='bottom_center')
+        self.middle_right = Box(on_left='middle_center', on_top='top_right', on_bottom='bottom_right')
+        self.bottom_left = Box(on_right='bottom_center', on_top='middle_left')
+        self.bottom_center = Box(on_left='bottom_left', on_right='bottom_right', on_top='middle_center')
+        self.bottom_right = Box(on_left='bottom_center', on_top='middle_right')
 
         self.available_spaces = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
@@ -25,7 +33,8 @@ class Board:
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
             if hasattr(self, player_move):
-                setattr(self, player_move, 'X')
+                selected_box = getattr(self, player_move)
+                selected_box.mark = 'X'
                 self.available_spaces.remove(player_move)
                 self.print_board()
                 return
@@ -38,7 +47,8 @@ class Board:
         logging.debug("Scope: Board class' computer_move() method")
         print("Machine's Move: ")
         machine_move = self.available_spaces[random.randint(0, len(self.available_spaces) - 1)]
-        setattr(self, machine_move, 'O')
+        selected_box = getattr(self, machine_move)
+        selected_box.mark = 'O'
         self.available_spaces.remove(machine_move)
         self.print_board()
 
@@ -79,14 +89,13 @@ class Board:
         else:
             return None
 
-
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
-        print('\n{} | {} | {}'.format(self.top_left, self.top_center, self.top_right))
+        print('\n{} | {} | {}'.format(self.top_left.mark, self.top_center.mark, self.top_right.mark))
         print(' ------- ')
-        print('{} | {} | {}'.format(self.middle_left, self.middle_center, self.middle_right))
+        print('{} | {} | {}'.format(self.middle_left.mark, self.middle_center.mark, self.middle_right.mark))
         print(' ------- ')
-        print('{} | {} | {}\n'.format(self.bottom_left, self.bottom_center, self.bottom_right))
+        print('{} | {} | {}\n'.format(self.bottom_left.mark, self.bottom_center.mark, self.bottom_right.mark))
 
 def play_game():
     '''This function launches the game.'''
