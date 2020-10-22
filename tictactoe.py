@@ -23,7 +23,19 @@ class Board:
         self.bottom_center = Box(on_left='bottom_left', on_right='bottom_right', on_top='middle_center')
         self.bottom_right = Box(on_left='bottom_center', on_top='middle_right')
 
-        self.available_spaces = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
+        self.all_box_instances = {
+            'top_left': self.top_left,
+            'top_center': self.top_center,
+            'top_right': self.top_right,
+            'middle_left': self.middle_left,
+            'middle_center': self.middle_center,
+            'middle_right': self.middle_right,
+            'bottom_left': self.bottom_left,
+            'bottom_center': self.bottom_center,
+            'bottom_right': self.bottom_right
+        }
+        
+        self.available_boxes = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
     def user_move(self, move_count):
         '''This method requests user input and executes the user's move.'''
@@ -35,7 +47,7 @@ class Board:
             if hasattr(self, player_move):
                 selected_box = getattr(self, player_move)
                 selected_box.mark = 'X'
-                self.available_spaces.remove(player_move)
+                self.available_boxes.remove(player_move)
                 self.print_board()
                 return
             else:
@@ -46,48 +58,31 @@ class Board:
         '''This method executes the computer's move.'''
         logging.debug("Scope: Board class' computer_move() method")
         print("Machine's Move: ")
-        machine_move = self.available_spaces[random.randint(0, len(self.available_spaces) - 1)]
+        machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
         selected_box = getattr(self, machine_move)
         selected_box.mark = 'O'
-        self.available_spaces.remove(machine_move)
+        self.available_boxes.remove(machine_move)
         self.print_board()
 
     def are_spaces_filled(self):
         '''This method checks to see if every space in the board is filled.'''
-        if len(self.available_spaces) == 0:
+        if len(self.available_boxes) == 0:
             return True
         else:
             return False
 
     def find_winner(self):
-        def is_this_complete(first, second, third):
-            if first == second == third and first == 'X':
-                return [True, 'X']
-            elif first == second == third and first == 'O':
-                return [True, 'O']
-            else:
-                return[False]
+        def is_row_complete(box):
+            print(box)
 
-        if is_this_complete(self.top_left, self.top_center, self.top_right)[0]:
-            return is_this_complete(self.top_left, self.top_center, self.top_right)[1]    
-        elif is_this_complete(self.middle_left, self.middle_center, self.middle_right)[0]:
-            return is_this_complete(self.middle_left, self.middle_center, self.middle_right)[1]
-        elif is_this_complete(self.bottom_left, self.bottom_center, self.bottom_right)[0]:
-            return is_this_complete(self.bottom_left, self.bottom_center, self.bottom_right)[1]
+        def is_column_complete(box):
+            print(box)
 
-        elif is_this_complete(self.top_left, self.middle_left, self.bottom_left)[0]:
-            return is_this_complete(self.top_left, self.middle_left, self.bottom_left)[1]
-        elif is_this_complete(self.top_center, self.middle_center, self.bottom_center)[0]:
-            return is_this_complete(self.top_center, self.middle_center, self.bottom_center)[1]
-        elif is_this_complete(self.top_right, self.middle_right, self.bottom_right)[0]:
-            return is_this_complete(self.top_right, self.middle_right, self.bottom_right)[1]
-
-        elif is_this_complete(self.top_left, self.middle_center, self.bottom_right)[0]:
-            return is_this_complete(self.top_left, self.middle_center, self.bottom_right)[1]
-        elif is_this_complete(self.top_right, self.middle_center, self.bottom_left)[0]:
-            return is_this_complete(self.top_right, self.middle_center, self.bottom_left)[1]
-        else:
-            return None
+        for box in self.all_box_instances:
+            if is_row_complete(box):
+                pass
+            elif is_column_complete(box):
+                pass        
 
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
