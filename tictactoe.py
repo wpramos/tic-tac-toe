@@ -9,21 +9,41 @@ class Box():
         self.on_right = on_right
         self.on_top = on_top
         self.on_bottom = on_bottom
-        self.mark = mark      
+        self.mark = mark
+
+    def set_attributes(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def is_row_complete(self):
+        pass
+
+    def is_column_complete(self):
+        pass
 
 class Board:
     def __init__(self):
-        self.top_left = Box(on_right='top_center', on_bottom='middle_left')
-        self.top_center = Box(on_left='top_left', on_right='top_right', on_bottom='middle_center')
-        self.top_right = Box(on_left='top_center', on_bottom='middle_right')
-        self.middle_left = Box(on_right='middle_center', on_top='top_left', on_bottom='bottom_left')
-        self.middle_center = Box(on_left='middle_left', on_right='middle_right', on_top='top_center', on_bottom='bottom_center')
-        self.middle_right = Box(on_left='middle_center', on_top='top_right', on_bottom='bottom_right')
-        self.bottom_left = Box(on_right='bottom_center', on_top='middle_left')
-        self.bottom_center = Box(on_left='bottom_left', on_right='bottom_right', on_top='middle_center')
-        self.bottom_right = Box(on_left='bottom_center', on_top='middle_right')
+        self.top_left = Box()
+        self.top_center = Box()
+        self.top_right = Box()
+        self.middle_left = Box()
+        self.middle_center = Box()
+        self.middle_right = Box()
+        self.bottom_left = Box()
+        self.bottom_center = Box()
+        self.bottom_right = Box()
 
-        self.all_box_instances = {
+        self.top_left.set_attributes(on_right = self.top_center, on_bottom = self.middle_left)
+        self.top_center.set_attributes(on_left = self.top_left, on_right = self.top_right, on_bottom = self.middle_center)
+        self.top_right.set_attributes(on_left = self.top_center, on_bottom = self.middle_right)
+        self.middle_left.set_attributes(on_right = self.middle_center, on_top = self.top_left, on_bottom = self.bottom_left)
+        self.middle_center.set_attributes(on_left = self.middle_left, on_right = self.middle_right, on_top = self.top_center, on_bottom = self.bottom_center)
+        self.middle_right.set_attributes(on_left = self.middle_center, on_top = self.top_right, on_bottom = self.bottom_right)
+        self.bottom_left.set_attributes(on_right = self.bottom_center, on_top = self.middle_left)
+        self.bottom_center.set_attributes(on_left = self.bottom_left, on_right = self.bottom_right, on_top = self.middle_center)
+        self.bottom_right.set_attributes(on_left = self.bottom_center, on_top = self.middle_right)
+
+        self.all_boxes = {
             'top_left': self.top_left,
             'top_center': self.top_center,
             'top_right': self.top_right,
@@ -72,17 +92,11 @@ class Board:
             return False
 
     def find_winner(self):
-        def is_row_complete(box):
-            print(box)
-
-        def is_column_complete(box):
-            print(box)
-
-        for box in self.all_box_instances:
-            if is_row_complete(box):
-                pass
-            elif is_column_complete(box):
-                pass        
+        for box in self.all_boxes:
+            if box.is_row_complete():
+                return box.mark
+            elif box.is_column_complete():
+                return box.mark
 
     def print_board(self):
         '''This method displays a visual representation of the board in the console.'''
