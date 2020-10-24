@@ -16,10 +16,60 @@ class Box():
             setattr(self, k, v)
 
     def is_row_complete(self):
-        pass
+        current_box = self
+
+        ordered_row = [current_box.mark]
+
+        while True:
+            if current_box.on_left:
+                ordered_row.insert(0, current_box.on_left.mark)
+                current_box = current_box.on_left
+            else:
+                current_box = self
+                break
+
+        while True:
+            if current_box.on_right:
+                ordered_row.append(current_box.on_right.mark)
+                current_box = current_box.on_right
+            else:
+                break
+        
+        if ordered_row.count('X') == 3 or ordered_row.count('O') == 3:
+            return True
 
     def is_column_complete(self):
-        pass
+        current_box = self
+
+        ordered_column = [current_box.mark]
+
+        while True:
+            if current_box.on_top:
+                ordered_column.insert(0, current_box.on_top.mark)
+                current_box = current_box.on_top
+            else:
+                current_box = self
+                break
+
+        while True:
+            if current_box.on_bottom:
+                ordered_column.append(current_box.on_bottom.mark)
+                current_box = current_box.on_bottom
+            else:
+                break
+        
+        if ordered_column.count('X') == 3 or ordered_column.count('O') == 3:
+            return True
+
+    def is_diagonal_complete(self):
+        if self.on_left and self.on_right and self.on_top and self.on_bottom:
+            ordered_diagonal_1 = [self.on_left.on_top.mark, self.mark, self.on_right.on_bottom.mark]
+            ordered_diagonal_2 = [self.on_left.on_bottom.mark, self.mark, self.on_right.on_top.mark]
+
+            if ordered_diagonal_1.count('X') == 3 or ordered_diagonal_1.count('O') == 3:
+                return True
+            elif ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
+                return True
 
 class Board:
     def __init__(self):
@@ -43,17 +93,7 @@ class Board:
         self.bottom_center.set_attributes(on_left = self.bottom_left, on_right = self.bottom_right, on_top = self.middle_center)
         self.bottom_right.set_attributes(on_left = self.bottom_center, on_top = self.middle_right)
 
-        self.all_boxes = {
-            'top_left': self.top_left,
-            'top_center': self.top_center,
-            'top_right': self.top_right,
-            'middle_left': self.middle_left,
-            'middle_center': self.middle_center,
-            'middle_right': self.middle_right,
-            'bottom_left': self.bottom_left,
-            'bottom_center': self.bottom_center,
-            'bottom_right': self.bottom_right
-        }
+        self.all_boxes = [self.top_left, self.top_center, self.top_right, self.middle_left, self.middle_center, self.middle_right, self.bottom_left, self.bottom_center, self.bottom_right]
         
         self.available_boxes = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
@@ -96,6 +136,8 @@ class Board:
             if box.is_row_complete():
                 return box.mark
             elif box.is_column_complete():
+                return box.mark
+            elif box.is_diagonal_complete():
                 return box.mark
 
     def print_board(self):
