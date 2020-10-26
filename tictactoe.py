@@ -166,56 +166,57 @@ class Board:
         print(' ------- ')
         print('{} | {} | {}\n'.format(self.bottom_left.mark, self.bottom_center.mark, self.bottom_right.mark))
 
-def play_game():
-    '''This function launches the game.'''
-    logging.debug("Scope: play_game() function")
-    print("\nLet's play...")
-    game_board = Board()
-    game_board.print_board()
+if __name__ == '__main__':
+    def play_game():
+        '''This function launches the game.'''
+        logging.debug("Scope: play_game() function")
+        print("\nLet's play...")
+        game_board = Board()
+        game_board.print_board()
 
-    m_count = random.randint(0, 1) # THE VARIABLE SPECIFIES THE MOVE_NUMBER
+        m_count = random.randint(0, 1) # THE VARIABLE SPECIFIES THE MOVE_NUMBER
+        while True:
+            if m_count % 2 == 0:
+                game_board.user_move(m_count)
+            else:
+                game_board.computer_move()
+            m_count += 1
+            
+            winner = game_board.find_winner()
+            
+            if winner:
+                print('The {} is the winner.\n'.format('user' if winner == 'X' else 'machine'))
+                break
+            if game_board.are_spaces_filled():
+                print('Stalemate! Neither the user nor the machine is a winner...')
+                break
+
+    game_count = 0
+    rebound = False
+
     while True:
-        if m_count % 2 == 0:
-            game_board.user_move(m_count)
+        question = ['Do you wanna play Tic Tac Toe..?', 'Do you wanna play again..?', 'Another game..?', 'Shall we give that another try..?', 'Are you up for one more..?']
+        if rebound:
+            # TO CHECK IF THIS IS A REBOUNDED INPUT REQUEST
+            yes_or_no = input().upper()
+        elif game_count == 0:
+            # TO CHECK IF THIS IS THE FIRST GAME OF SESSION
+            yes_or_no = input('{} [Respond with Y or N]\n'.format(question[0])).upper()
         else:
-            game_board.computer_move()
-        m_count += 1
-        
-        winner = game_board.find_winner()
-        
-        if winner:
-            print('The {} is the winner.\n'.format('user' if winner == 'X' else 'machine'))
+            # NEITHER A REBOUNDED INPUT REQUEST NOR THE FIRST GAME OF SESSION
+            yes_or_no = input('{} [Respond with Y or N]\n'.format(question[random.randint(1,4)])).upper()
+
+        if yes_or_no == 'Y':
+            # IF THE USER WISHES TO PLAY
+            play_game()
+            game_count += 1
+            rebound = False
+        elif yes_or_no == 'N':
+            # IF THE USER WISHES NOT TO PLAY
+            print('Fine! See ya later...')
             break
-        if game_board.are_spaces_filled():
-            print('Stalemate! Neither the user nor the machine is a winner...')
-            break
-
-game_count = 0
-rebound = False
-
-while True:
-    question = ['Do you wanna play Tic Tac Toe..?', 'Do you wanna play again..?', 'Another game..?', 'Shall we give that another try..?', 'Are you up for one more..?']
-    if rebound:
-        # TO CHECK IF THIS IS A REBOUNDED INPUT REQUEST
-        yes_or_no = input().upper()
-    elif game_count == 0:
-        # TO CHECK IF THIS IS THE FIRST GAME OF SESSION
-        yes_or_no = input('{} [Respond with Y or N]\n'.format(question[0])).upper()
-    else:
-        # NEITHER A REBOUNDED INPUT REQUEST NOR THE FIRST GAME OF SESSION
-        yes_or_no = input('{} [Respond with Y or N]\n'.format(question[random.randint(1,4)])).upper()
-
-    if yes_or_no == 'Y':
-        # IF THE USER WISHES TO PLAY
-        play_game()
-        game_count += 1
-        rebound = False
-    elif yes_or_no == 'N':
-        # IF THE USER WISHES NOT TO PLAY
-        print('Fine! See ya later...')
-        break
-    else:
-        # THIS IS THE CASE OF A REBOUNDED INPUT REQUEST, WHERE THE USER HAS 
-        # NEITHER PASSED A 'Y' OR AN 'N' AS THE INPUT
-        print('Either a Y or an N, please.')
-        rebound = True
+        else:
+            # THIS IS THE CASE OF A REBOUNDED INPUT REQUEST, WHERE THE USER HAS 
+            # NEITHER PASSED A 'Y' OR AN 'N' AS THE INPUT
+            print('Either a Y or an N, please.')
+            rebound = True
