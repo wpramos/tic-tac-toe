@@ -166,7 +166,7 @@ class Board:
         print(' ------- ')
         print('{} | {} | {}\n'.format(self.bottom_left.mark, self.bottom_center.mark, self.bottom_right.mark))
 
-if __name__ == '__main__':
+def main():
     def play_game():
         '''This function launches the game.'''
         logging.debug("Scope: play_game() function")
@@ -220,3 +220,6 @@ if __name__ == '__main__':
             # NEITHER PASSED A 'Y' OR AN 'N' AS THE INPUT
             print('Either a Y or an N, please.')
             rebound = True
+
+if __name__ == '__main__':
+    main()
