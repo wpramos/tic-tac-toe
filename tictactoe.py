@@ -4,6 +4,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(levelname)s: %(message)s')
 logging.disable(logging.DEBUG)
 
 class Box():
+    all_boxes = []
+
     def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None, mark=' '):
         self.on_left = on_left
         self.on_right = on_right
@@ -11,11 +13,16 @@ class Box():
         self.on_bottom = on_bottom
         self.mark = mark
 
+        self.all_boxes.append(self)
+        logging.debug(self.all_boxes)
+
     def set_attributes(self, **kwargs):
+        '''This method is used to set the attributes of a Box class object, by passing them as keyword arguments.'''
         for k, v in kwargs.items():
             setattr(self, k, v)
 
     def is_row_complete(self):
+        '''This method returns True if the row containing the box is completed by one player.'''
         current_box = self
 
         ordered_row = [current_box.mark]
@@ -39,6 +46,7 @@ class Box():
             return True
 
     def is_column_complete(self):
+        '''This method returns True if the column containing the box is completed by one player.'''
         current_box = self
 
         ordered_column = [current_box.mark]
@@ -62,6 +70,7 @@ class Box():
             return True
 
     def is_diagonal_complete(self):
+        '''This method returns True if either one of the diagonals is completed by one player.'''
         if self.on_left and self.on_right and self.on_top and self.on_bottom:
             ordered_diagonal_1 = [self.on_left.on_top.mark, self.mark, self.on_right.on_bottom.mark]
             ordered_diagonal_2 = [self.on_left.on_bottom.mark, self.mark, self.on_right.on_top.mark]
@@ -70,6 +79,15 @@ class Box():
                 return True
             elif ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
                 return True
+
+    def __repr__(self):
+        return 'Box(on_left={}, on_right={}, on_top={}, on_bottom={}, mark={})'.format(
+            str(self.on_left),
+            str(self.on_right),
+            str(self.on_top),
+            str(self.on_bottom),
+            repr(self.mark)
+        )
 
 class Board:
     def __init__(self):
@@ -92,8 +110,6 @@ class Board:
         self.bottom_left.set_attributes(on_right = self.bottom_center, on_top = self.middle_left)
         self.bottom_center.set_attributes(on_left = self.bottom_left, on_right = self.bottom_right, on_top = self.middle_center)
         self.bottom_right.set_attributes(on_left = self.bottom_center, on_top = self.middle_right)
-
-        self.all_boxes = [self.top_left, self.top_center, self.top_right, self.middle_left, self.middle_center, self.middle_right, self.bottom_left, self.bottom_center, self.bottom_right]
         
         self.available_boxes = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
 
@@ -132,7 +148,9 @@ class Board:
             return False
 
     def find_winner(self):
-        for box in self.all_boxes:
+        '''This method runs through each box, to see if either the row, column or diagonal containing it is complete 
+        and returns the mark of the winner.'''
+        for box in Box.all_boxes:
             if box.is_row_complete():
                 return box.mark
             elif box.is_column_complete():
