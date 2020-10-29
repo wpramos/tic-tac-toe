@@ -5,6 +5,11 @@ class TestTicTacToe(unittest.TestCase):
     def setUp(self):
         self.sample_board = Board()
 
+    def tearDown(self):
+        # del self.sample_board
+        # self.sample_board = None
+        pass
+
     def test_diagonal_X(self):
         self.sample_board.top_left.mark = 'X'
         self.sample_board.middle_center.mark = 'X'
