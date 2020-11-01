@@ -6,9 +6,17 @@ class TestTicTacToe(unittest.TestCase):
         self.sample_board = Board()
 
     def tearDown(self):
+        # FIRST ATTEMPT
         # del self.sample_board
+
+        # SECOND ATTEMPT
         # self.sample_board = None
-        pass
+
+        # FINAL ATTEMPT
+        self.sample_board.top_right.mark = ' '
+        self.sample_board.middle_center.mark = ' '
+        self.sample_board.bottom_left.mark = ' '
+        # pass
 
     def test_diagonal_X(self):
         self.sample_board.top_left.mark = 'X'
