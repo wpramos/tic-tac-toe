@@ -7,6 +7,9 @@ class Box():
     all_boxes = []
 
     def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None, mark=' '):
+        if len(Box.all_boxes) == 9:
+            Box.all_boxes = []
+
         self.on_left = on_left
         self.on_right = on_right
         self.on_top = on_top
