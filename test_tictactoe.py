@@ -1,7 +1,8 @@
 import unittest
+
 from tictactoe import Box, Board
 
-class TestTicTacToe(unittest.TestCase):
+class TestFindWinner(unittest.TestCase):
     def setUp(self):
         self.sample_board = Board()
 
@@ -61,6 +62,11 @@ class TestTicTacToe(unittest.TestCase):
         self.sample_board.print_board()
 
         self.assertEqual(self.sample_board.find_winner(), 'O', "Should be 'O'.")
+
+    def test_find_winner_blank(self):
+        self.sample_board.print_board()
+        
+        self.assertEqual(self.sample_board.find_winner(), None, 'Should return None.')
     
 if __name__ == "__main__":
     unittest.main()
