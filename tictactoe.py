@@ -8,7 +8,8 @@ class Box():
 
     def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None, mark=' '):
         if len(Box.all_boxes) == 9:
-            Box.all_boxes = []
+            # To delete the items in class attribute all_boxes in the case that a fresh Board is instantiated. 
+            Box.all_boxes.clear()
 
         self.on_left = on_left
         self.on_right = on_right
@@ -24,8 +25,8 @@ class Box():
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def is_row_complete(self):
-        '''This method returns True if the row containing the box is completed by one player.'''
+    def ordered_row(self):
+        '''This method returns an ordered list of the row containing the box.'''
         current_box = self
 
         ordered_row = [current_box.mark]
@@ -45,11 +46,13 @@ class Box():
             else:
                 break
         
-        if ordered_row.count('X') == 3 or ordered_row.count('O') == 3:
-            return True
+        return ordered_row 
+        
+        # if ordered_row.count('X') == 3 or ordered_row.count('O') == 3:
+        #     return True
 
-    def is_column_complete(self):
-        '''This method returns True if the column containing the box is completed by one player.'''
+    def ordered_column(self):
+        '''This method returns an ordered list of the column containing the box.'''
         current_box = self
 
         ordered_column = [current_box.mark]
@@ -69,19 +72,37 @@ class Box():
             else:
                 break
         
-        if ordered_column.count('X') == 3 or ordered_column.count('O') == 3:
-            return True
+        return ordered_column
 
-    def is_diagonal_complete(self):
-        '''This method returns True if either one of the diagonals is completed by one player.'''
+        # if ordered_column.count('X') == 3 or ordered_column.count('O') == 3:
+        #     return True
+
+    def ordered_diagonal_1(self):
+        '''This method returns an ordered list representing the first diagonal,
+        if the Box instance is the middle-center of the Board.'''
         if self.on_left and self.on_right and self.on_top and self.on_bottom:
             ordered_diagonal_1 = [self.on_left.on_top.mark, self.mark, self.on_right.on_bottom.mark]
+
+            return ordered_diagonal_1
+            
+            # if ordered_diagonal_1.count('X') == 3 or ordered_diagonal_1.count('O') == 3:
+            #     return True
+
+    def ordered_diagonal_2(self):
+        '''This method returns an ordered list representing the second diagonal,
+        if the Box instance is the middle-center of the Board.'''
+        if self.on_left and self.on_right and self.on_top and self.on_bottom:
             ordered_diagonal_2 = [self.on_left.on_bottom.mark, self.mark, self.on_right.on_top.mark]
 
-            if ordered_diagonal_1.count('X') == 3 or ordered_diagonal_1.count('O') == 3:
-                return True
-            elif ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
-                return True
+            return ordered_diagonal_2
+            
+            # if ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
+            #     return True                
+
+    def is_nearly_complete(self):
+        '''This method returns True if either the diagonal, the row or the column containing the box
+        will be completed by filling this box, either by the user or the machine.'''
+        pass
 
     def __repr__(self):
         return 'Box(on_left={}, on_right={}, on_top={}, on_bottom={}, mark={})'.format(
@@ -144,21 +165,34 @@ class Board:
         self.print_board()
 
     def are_spaces_filled(self):
-        '''This method checks to see if every space in the board is filled.'''
+        '''This method returns True if every space in the board is filled.'''
         if len(self.available_boxes) == 0:
             return True
         else:
+            return False
+
+    @staticmethod 
+    def is_complete(ordered_list):
+        '''This static method accepts a list and returns True, if either the 'X' or 'O' has filled three spaces.'''
+        try:
+            if ordered_list.count('X') == 3 or ordered_list.count('O') == 3:
+                return True
+        except AttributeError:
+            # As ordered_diagonal_1() and ordered_diagonal_2() can return None, the use of the count() method 
+            # will raise an AttributeError in the case of a Box intance that is not Middle-Center.
             return False
 
     def find_winner(self):
         '''This method runs through each box, to see if either the row, column or diagonal containing it is complete 
         and returns the mark of the winner.'''
         for box in Box.all_boxes:
-            if box.is_row_complete():
+            if Board.is_complete(box.ordered_row()):
                 return box.mark
-            elif box.is_column_complete():
+            elif Board.is_complete(box.ordered_column()):
                 return box.mark
-            elif box.is_diagonal_complete():
+            elif Board.is_complete(box.ordered_diagonal_1()):
+                return box.mark
+            elif Board.is_complete(box.ordered_diagonal_2()):
                 return box.mark
 
     def print_board(self):
