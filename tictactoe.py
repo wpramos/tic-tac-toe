@@ -99,10 +99,16 @@ class Box():
             # if ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
             #     return True                
 
-    def is_nearly_complete(self):
-        '''This method returns True if either the diagonal, the row or the column containing the box
-        will be completed by filling this box, either by the user or the machine.'''
-        pass
+    def is_on_the_verge(self):
+        '''This method returns True if either the row, the column or the diagonal containing the box
+        is on the verge of completion, i.e. the sequence will be completed by filling this box, 
+        either by the user or the machine. 
+        
+        For the method to work, the Box instance that is passed must be unmarked.'''
+        if self.ordered_row().count('O') == 2 or self.ordered_column().count('O') == 2 or self.ordered_diagonal_1().count('O') == 2 or self.ordered_diagonal_2().count('O') == 2:
+            return 'O'
+        elif self.ordered_row().count('X') == 2 or self.ordered_column().count('X') == 2 or self.ordered_diagonal_1().count('X') == 2 or self.ordered_diagonal_2().count('X') == 2:
+            return 'X'
 
     def __repr__(self):
         return 'Box(on_left={}, on_right={}, on_top={}, on_bottom={}, mark={})'.format(
