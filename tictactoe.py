@@ -105,9 +105,19 @@ class Box():
         either by the user or the machine. 
         
         For the method to work, the Box instance that is passed must be unmarked.'''
-        if self.ordered_row().count('O') == 2 or self.ordered_column().count('O') == 2 or self.ordered_diagonal_1().count('O') == 2 or self.ordered_diagonal_2().count('O') == 2:
+        ordered_row = self.ordered_row()
+        ordered_column = self.ordered_column()
+        if self.ordered_diagonal_1() == None or self.ordered_diagonal_2() == None:
+            # The following lines of code use the count method, expecting this value to be a list.
+            # Hence, setting this to a blank list in the case where the Box is not a middle-center Box.
+            ordered_diagonal_1 = []
+            ordered_diagonal_2 = []
+        else:
+            ordered_diagonal_1 = self.ordered_diagonal_1()
+            ordered_diagonal_2 = self.ordered_diagonal_2()
+        if ordered_row.count('O') == 2 or ordered_column.count('O') == 2 or ordered_diagonal_1.count('O') == 2 or ordered_diagonal_2.count('O') == 2:
             return 'O'
-        elif self.ordered_row().count('X') == 2 or self.ordered_column().count('X') == 2 or self.ordered_diagonal_1().count('X') == 2 or self.ordered_diagonal_2().count('X') == 2:
+        elif ordered_row.count('X') == 2 or ordered_column.count('X') == 2 or ordered_diagonal_1.count('X') == 2 or ordered_diagonal_2.count('X') == 2:
             return 'X'
 
     def __repr__(self):
@@ -163,8 +173,25 @@ class Board:
     def computer_move(self):
         '''This method executes the computer's move.'''
         logging.debug("Scope: Board class' computer_move() method")
-        print("Machine's Move: ")
-        machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
+        # machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
+        winner_if_O = []
+        winner_if_X = []
+        for box in self.available_boxes:
+            tested_box = getattr(self, box)
+            winner_mark = tested_box.is_on_the_verge()
+            if winner_mark == 'O':
+                winner_if_O.append(box)
+            elif winner_mark == 'X':
+                winner_if_X.append(box)
+
+        if winner_if_O:
+            machine_move = winner_if_O[0] # CAN BE MODIFIED TO RANDOMIZE ITEM SELECTION 
+        elif winner_if_X:
+            machine_move = winner_if_X[0] # CAN BE MODIFIED TO RANDOMIZE ITEM SELECTION 
+        else:
+            machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
+        
+        print("Machine's Move: {}".format('-'.join(machine_move.split('_'))))
         selected_box = getattr(self, machine_move)
         selected_box.mark = 'O'
         self.available_boxes.remove(machine_move)
