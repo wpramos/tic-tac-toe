@@ -6,9 +6,11 @@ logging.disable(logging.DEBUG)
 class Box():
     all_boxes = []
 
-    def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None, mark=' '):
+    def __init__(self, on_left=None, on_right=None, on_top=None, on_bottom=None,
+        mark=' '):
         if len(Box.all_boxes) == 9:
-            # To delete the items in class attribute all_boxes in the case that a fresh Board is instantiated. 
+            # To delete the items in class attribute all_boxes in the case that 
+            # a fresh Board is instantiated. 
             Box.all_boxes.clear()
 
         self.on_left = on_left
@@ -21,12 +23,14 @@ class Box():
         logging.debug(self.all_boxes)
 
     def set_attributes(self, **kwargs):
-        '''This method is used to set the attributes of a Box class object, by passing them as keyword arguments.'''
+        '''This method is used to set the attributes of a Box class object, by 
+        passing them as keyword arguments.'''
         for k, v in kwargs.items():
             setattr(self, k, v)
 
     def ordered_row(self):
-        '''This method returns an ordered list of the row containing the box.'''
+        '''This method returns an ordered list of the row containing the 
+        box.'''
         current_box = self
 
         ordered_row = [current_box.mark]
@@ -47,12 +51,10 @@ class Box():
                 break
         
         return ordered_row 
-        
-        # if ordered_row.count('X') == 3 or ordered_row.count('O') == 3:
-        #     return True
 
     def ordered_column(self):
-        '''This method returns an ordered list of the column containing the box.'''
+        '''This method returns an ordered list of the column containing the 
+        box.'''
         current_box = self
 
         ordered_column = [current_box.mark]
@@ -74,54 +76,67 @@ class Box():
         
         return ordered_column
 
-        # if ordered_column.count('X') == 3 or ordered_column.count('O') == 3:
-        #     return True
-
     def ordered_diagonal_1(self):
         '''This method returns an ordered list representing the first diagonal,
         if the Box instance is the middle-center of the Board.'''
         if self.on_left and self.on_right and self.on_top and self.on_bottom:
-            ordered_diagonal_1 = [self.on_left.on_top.mark, self.mark, self.on_right.on_bottom.mark]
+            
+            ordered_diagonal_1 = [
+                self.on_left.on_top.mark, 
+                self.mark,
+                self.on_right.on_bottom.mark
+                ]
 
             return ordered_diagonal_1
-            
-            # if ordered_diagonal_1.count('X') == 3 or ordered_diagonal_1.count('O') == 3:
-            #     return True
 
     def ordered_diagonal_2(self):
         '''This method returns an ordered list representing the second diagonal,
         if the Box instance is the middle-center of the Board.'''
         if self.on_left and self.on_right and self.on_top and self.on_bottom:
-            ordered_diagonal_2 = [self.on_left.on_bottom.mark, self.mark, self.on_right.on_top.mark]
-
-            return ordered_diagonal_2
             
-            # if ordered_diagonal_2.count('X') == 3 or ordered_diagonal_2.count('O') == 3:
-            #     return True                
+            ordered_diagonal_2 = [
+                self.on_left.on_bottom.mark,
+                self.mark, 
+                self.on_right.on_top.mark
+                ]
+
+            return ordered_diagonal_2                
 
     def is_on_the_verge(self):
-        '''This method returns True if either the row, the column or the diagonal containing the box
-        is on the verge of completion, i.e. the sequence will be completed by filling this box, 
-        either by the user or the machine. 
+        '''This method returns True if either the row, the column or the 
+        diagonal containing the box is on the verge of completion, i.e. the 
+        sequence will be completed by filling this box, either by the user or 
+        the machine. 
         
-        For the method to work, the Box instance that is passed must be unmarked.'''
+        Note: The Box instance that is passed must be unmarked.'''
+        
         ordered_row = self.ordered_row()
         ordered_column = self.ordered_column()
-        if self.ordered_diagonal_1() == None or self.ordered_diagonal_2() == None:
-            # The following lines of code use the count method, expecting this value to be a list.
-            # Hence, setting this to a blank list in the case where the Box is not a middle-center Box.
+        ordered_diagonal_1 = self.ordered_diagonal_1()
+        ordered_diagonal_2 = self.ordered_diagonal_2()
+
+        if ordered_diagonal_1 == None or ordered_diagonal_2 == None:
+            # The following lines of code use the count method, expecting these 
+            # values to be a lists. The values however can be of the None 
+            # datatype if the Box is not a middle-center Box. To avoid breaking 
+            # the code, setting this to a blank list.
             ordered_diagonal_1 = []
             ordered_diagonal_2 = []
-        else:
-            ordered_diagonal_1 = self.ordered_diagonal_1()
-            ordered_diagonal_2 = self.ordered_diagonal_2()
-        if ordered_row.count('O') == 2 or ordered_column.count('O') == 2 or ordered_diagonal_1.count('O') == 2 or ordered_diagonal_2.count('O') == 2:
+            
+        if (ordered_row.count('O') == 2
+            or ordered_column.count('O') == 2 
+            or ordered_diagonal_1.count('O') == 2 
+            or ordered_diagonal_2.count('O') == 2):
             return 'O'
-        elif ordered_row.count('X') == 2 or ordered_column.count('X') == 2 or ordered_diagonal_1.count('X') == 2 or ordered_diagonal_2.count('X') == 2:
+        elif (ordered_row.count('X') == 2 
+            or ordered_column.count('X') == 2 
+            or ordered_diagonal_1.count('X') == 2 
+            or ordered_diagonal_2.count('X') == 2):
             return 'X'
 
     def __repr__(self):
-        return 'Box(on_left={}, on_right={}, on_top={}, on_bottom={}, mark={})'.format(
+        return 'Box(on_left={}, on_right={}, on_top={}, on_bottom={}, ' \
+            'mark={})'.format(
             str(self.on_left),
             str(self.on_right),
             str(self.on_top),
@@ -141,23 +156,69 @@ class Board:
         self.bottom_center = Box()
         self.bottom_right = Box()
 
-        self.top_left.set_attributes(on_right = self.top_center, on_bottom = self.middle_left)
-        self.top_center.set_attributes(on_left = self.top_left, on_right = self.top_right, on_bottom = self.middle_center)
-        self.top_right.set_attributes(on_left = self.top_center, on_bottom = self.middle_right)
-        self.middle_left.set_attributes(on_right = self.middle_center, on_top = self.top_left, on_bottom = self.bottom_left)
-        self.middle_center.set_attributes(on_left = self.middle_left, on_right = self.middle_right, on_top = self.top_center, on_bottom = self.bottom_center)
-        self.middle_right.set_attributes(on_left = self.middle_center, on_top = self.top_right, on_bottom = self.bottom_right)
-        self.bottom_left.set_attributes(on_right = self.bottom_center, on_top = self.middle_left)
-        self.bottom_center.set_attributes(on_left = self.bottom_left, on_right = self.bottom_right, on_top = self.middle_center)
-        self.bottom_right.set_attributes(on_left = self.bottom_center, on_top = self.middle_right)
+        self.top_left.set_attributes(
+            on_right = self.top_center,
+            on_bottom = self.middle_left
+            )
+        self.top_center.set_attributes(
+            on_left = self.top_left,
+            on_right = self.top_right,
+            on_bottom = self.middle_center
+            )
+        self.top_right.set_attributes(
+            on_left = self.top_center,
+            on_bottom = self.middle_right
+            )
+        self.middle_left.set_attributes(
+            on_right = self.middle_center,
+            on_top = self.top_left,
+            on_bottom = self.bottom_left
+            )
+        self.middle_center.set_attributes(
+            on_left = self.middle_left,
+            on_right = self.middle_right,
+            on_top = self.top_center,
+            on_bottom = self.bottom_center
+            )
+        self.middle_right.set_attributes(
+            on_left = self.middle_center,
+            on_top = self.top_right,
+            on_bottom = self.bottom_right
+            )
+        self.bottom_left.set_attributes(
+            on_right = self.bottom_center,
+            on_top = self.middle_left
+            )
+        self.bottom_center.set_attributes(
+            on_left = self.bottom_left,
+            on_right = self.bottom_right,
+            on_top = self.middle_center
+            )
+        self.bottom_right.set_attributes(
+            on_left = self.bottom_center,
+            on_top = self.middle_right
+            )
         
-        self.available_boxes = ['top_left', 'top_center', 'top_right', 'middle_left', 'middle_center', 'middle_right', 'bottom_left', 'bottom_center', 'bottom_right']
+        self.available_boxes = [
+            'top_left', 
+            'top_center', 
+            'top_right', 
+            'middle_left', 
+            'middle_center', 
+            'middle_right', 
+            'bottom_left', 
+            'bottom_center', 
+            'bottom_right'
+            ]
 
     def user_move(self, move_count):
         '''This method requests user input and executes the user's move.'''
         logging.debug("Scope: Board class' user_move() method")
         if move_count < 2:
-            print('Please make your move...\n\nRespond with a combination of Top/Middle/Bottom\nand Left/Center/Right, separated with a hyphen.\n\nFor instance, "Top-Right"/"Bottom-Center"\n')
+            print('Please make your move...\n\n' \
+                    'Respond with a combination of Top/Middle/Bottom\n' \
+                    'and Left/Center/Right, separated with a hyphen.\n\n' \
+                    'For instance, "Top-Right"/"Bottom-Center"\n')
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
             if hasattr(self, player_move):
@@ -173,7 +234,7 @@ class Board:
     def computer_move(self):
         '''This method executes the computer's move.'''
         logging.debug("Scope: Board class' computer_move() method")
-        # machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
+
         winner_if_O = []
         winner_if_X = []
         for box in self.available_boxes:
@@ -185,11 +246,13 @@ class Board:
                 winner_if_X.append(box)
 
         if winner_if_O:
-            machine_move = winner_if_O[0] # CAN BE MODIFIED TO RANDOMIZE ITEM SELECTION 
+            machine_move = winner_if_O[random.randint(0, len(winner_if_O) - 1)]
         elif winner_if_X:
-            machine_move = winner_if_X[0] # CAN BE MODIFIED TO RANDOMIZE ITEM SELECTION 
+            machine_move = winner_if_X[random.randint(0, len(winner_if_X) - 1)]
         else:
-            machine_move = self.available_boxes[random.randint(0, len(self.available_boxes) - 1)]
+            machine_move = self.available_boxes[
+                random.randint(0, len(self.available_boxes) - 1)
+                ]
         
         print("Machine's Move: {}".format('-'.join(machine_move.split('_'))))
         selected_box = getattr(self, machine_move)
@@ -206,18 +269,20 @@ class Board:
 
     @staticmethod 
     def is_complete(ordered_list):
-        '''This static method accepts a list and returns True, if either the 'X' or 'O' has filled three spaces.'''
+        '''This static method accepts a list and returns True, if either the 'X'
+        or 'O' has filled three spaces.'''
         try:
             if ordered_list.count('X') == 3 or ordered_list.count('O') == 3:
                 return True
         except AttributeError:
-            # As ordered_diagonal_1() and ordered_diagonal_2() can return None, the use of the count() method 
-            # will raise an AttributeError in the case of a Box intance that is not Middle-Center.
+            # The ordered_diagonal_1() and ordered_diagonal_2() methods can 
+            # return None, if the Box intance is not Middle-Center. In such a 
+            # case, the use of the count() method will raise an AttributeError.
             return False
 
     def find_winner(self):
-        '''This method runs through each box, to see if either the row, column or diagonal containing it is complete 
-        and returns the mark of the winner.'''
+        '''This method runs through each box, to see if either the row, column 
+        or diagonal containing it is complete, and returns the winner's mark.'''
         for box in Box.all_boxes:
             if Board.is_complete(box.ordered_row()):
                 return box.mark
@@ -229,12 +294,24 @@ class Board:
                 return box.mark
 
     def print_board(self):
-        '''This method displays a visual representation of the board in the console.'''
-        print('\n{} | {} | {}'.format(self.top_left.mark, self.top_center.mark, self.top_right.mark))
+        '''This method displays a visual representaition of the board.'''
+        print('\n{} | {} | {}'.format(
+            self.top_left.mark, 
+            self.top_center.mark, 
+            self.top_right.mark
+            ))
         print(' ------- ')
-        print('{} | {} | {}'.format(self.middle_left.mark, self.middle_center.mark, self.middle_right.mark))
+        print('{} | {} | {}'.format(
+            self.middle_left.mark, 
+            self.middle_center.mark, 
+            self.middle_right.mark
+            ))
         print(' ------- ')
-        print('{} | {} | {}\n'.format(self.bottom_left.mark, self.bottom_center.mark, self.bottom_right.mark))
+        print('{} | {} | {}\n'.format(
+            self.bottom_left.mark, 
+            self.bottom_center.mark, 
+            self.bottom_right.mark
+            ))
 
 def main():
     def play_game():
@@ -255,26 +332,35 @@ def main():
             winner = game_board.find_winner()
             
             if winner:
-                print('The {} is the winner.\n'.format('user' if winner == 'X' else 'machine'))
+                print('The {} is the winner.\n'.format(
+                    'user' if winner == 'X' else 'machine'))
                 break
             if game_board.are_spaces_filled():
-                print('Stalemate! Neither the user nor the machine is a winner...')
+                print("The game is a tie...")
                 break
 
     game_count = 0
     rebound = False
 
     while True:
-        question = ['Do you wanna play Tic Tac Toe..?', 'Do you wanna play again..?', 'Another game..?', 'Shall we give that another try..?', 'Are you up for one more..?']
+        question = [
+            'Do you wanna play Tic Tac Toe..?', 
+            'Do you wanna play again..?', 
+            'Another game..?', 
+            'Shall we give that another try..?', 
+            'Are you up for one more..?'
+            ]
         if rebound:
             # TO CHECK IF THIS IS A REBOUNDED INPUT REQUEST
             yes_or_no = input().upper()
         elif game_count == 0:
             # TO CHECK IF THIS IS THE FIRST GAME OF SESSION
-            yes_or_no = input('{} [Respond with Y or N]\n'.format(question[0])).upper()
+            yes_or_no = input('{} [Respond with Y or N]\n'.format(
+                question[0])).upper()
         else:
             # NEITHER A REBOUNDED INPUT REQUEST NOR THE FIRST GAME OF SESSION
-            yes_or_no = input('{} [Respond with Y or N]\n'.format(question[random.randint(1,4)])).upper()
+            yes_or_no = input('{} [Respond with Y or N]\n'.format(
+                question[random.randint(1,4)])).upper()
 
         if yes_or_no == 'Y':
             # IF THE USER WISHES TO PLAY
