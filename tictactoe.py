@@ -229,14 +229,35 @@ class Board:
                   'For instance, "Top-Right"/"Bottom-Center"\n')
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
-            if hasattr(self, player_move):
+            if (hasattr(self, player_move)
+                    and player_move in self.available_boxes):
+                # In the condition that the input represents an actual
+                # Box in the Board, and the Box is unmarked
                 selected_box = getattr(self, player_move)
                 selected_box.mark = 'X'
                 self.available_boxes.remove(player_move)
                 self.print_board()
                 return
+            elif (hasattr(self, player_move)
+                    and player_move not in self.available_boxes):
+                # In the condition that the input represents an actual
+                # Box in the Board, but the Box is marked
+                print('\nThat box seems to be taken...\n'
+                      'Try another box. "{}", for instance.\n'.format(
+                          '-'.join(self.available_boxes[
+                              random.randint(0, len(self.available_boxes) - 1)
+                          ].split('_'))
+                      ))
+                continue
             else:
-                print('\nTry "Top-Left", for instance.\n')
+                # In the condition that the input does not represent an
+                # actual Box in the Board
+                print("\nThat isn't a valid input...\n"
+                      'Try "{}", for instance.\n'.format(
+                          '-'.join(self.available_boxes[
+                              random.randint(0, len(self.available_boxes) - 1)
+                          ].split('_'))
+                      ))
                 continue
 
     def computer_move(self):
@@ -383,7 +404,7 @@ def main():
             rebound = False
         elif yes_or_no == 'N':
             # IF THE USER WISHES NOT TO PLAY
-            print('Until next time...')
+            print('\nUntil next time...\n')
             break
         else:
             # THIS IS THE CASE OF A REBOUNDED INPUT REQUEST, WHERE THE
