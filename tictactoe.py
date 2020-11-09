@@ -223,10 +223,7 @@ class Board:
         """This method requests user input and executes the user's move."""
         logging.debug("Scope: Board class' user_move() method")
         if move_count < 2:
-            print('Please make your move...\n\n'
-                  'Respond with a combination of Top/Middle/Bottom\n'
-                  'and Left/Center/Right, separated with a hyphen.\n\n'
-                  'For instance, "Top-Right"/"Bottom-Center"\n')
+            print('Please make your move...\n')
         while True:
             player_move = input('Your Move: ').lower().replace('-', '_')
             if (hasattr(self, player_move)
@@ -351,7 +348,10 @@ def main():
     def play_game():
         """This function launches the game."""
         logging.debug("Scope: play_game() function")
-        print("\nLet's play...")
+        print('\nOn your turn...\n\n'
+              'Respond with a combination of Top/Middle/Bottom\n'
+              'and Left/Center/Right, separated with a hyphen.\n\n'
+              'For instance, "Top-Right"/"Bottom-Center"\n')
         game_board = Board()
         game_board.print_board()
 
@@ -370,7 +370,7 @@ def main():
                 break
 
             if game_board.are_spaces_filled():
-                print("The game is a tie...")
+                print("The game is a tie...\n")
                 break
 
     game_count = 0
